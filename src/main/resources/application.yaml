@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: bolasdejairo
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  r2dbc:
+    url: ${DATABASE_URL:r2dbc:postgresql://${app.db.host}:${app.db.port}/${app.db.name}}
+    username: ${app.db.username}
+    password: ${app.db.password}
+    pool:
+      enabled: true
+      initial-size: ${app.db.pool.initial-size}
+      max-size: ${app.db.pool.max-size}
+      max-idle-time: ${app.db.pool.max-idle-time}
+      validation-query: SELECT 1
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+        add-additional-paths: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+app:
+  db:
+    host: ${PGHOST:${DB_HOST:localhost}}
+    port: ${PGPORT:${DB_PORT:5432}}
+    name: ${PGDATABASE:${DB_NAME:bolasdejairo}}
+    username: ${PGUSER:${DB_USERNAME:postgres}}
+    password: ${PGPASSWORD:${DB_PASSWORD:postgres}}
+    init:
+      enabled: ${DB_INIT_ENABLED:false}
+    pool:
+      initial-size: ${DB_POOL_INITIAL_SIZE:0}
+      max-size: ${DB_POOL_MAX_SIZE:20}
+      max-idle-time: ${DB_POOL_MAX_IDLE_TIME:30m}
+    cloud-sql:
+      enabled: ${GCP_CLOUD_SQL_ENABLED:false}
+      instance-connection-name: ${INSTANCE_CONNECTION_NAME:}

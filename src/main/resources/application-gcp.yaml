@@ -1,0 +1,6 @@
+app:
+  db:
+    init:
+      enabled: false
+    cloud-sql:
+      enabled: true
